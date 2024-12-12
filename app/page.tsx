@@ -1,4 +1,8 @@
-export default function Home() {
+interface User {
+  userHandle: string;
+}
+
+export default function Home(user: User) {
   return (
     <div className='grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]'>
       <h1 className='text-4xl font-bold text-center'>Forza Dashboard</h1>
@@ -7,7 +11,7 @@ export default function Home() {
           <h2 className='text-2xl font-bold'>Welcome!</h2>
           <p>
             This is a dashboard for Forza. It is a project created by Mariusz
-            Krawczyk.
+            Krawczyk. hi, {user.userHandle}
           </p>
         </div>
       </div>

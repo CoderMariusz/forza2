@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import TopToolBar from './TopToolBar';
 import LeftSideMenu, { MenuItem } from './LeftSideMenu';
+import { auth } from '@clerk/nextjs/server';
+import { ClerkProvider } from '@clerk/nextjs';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
   description: 'Create by Mariusz Krawczyk'
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
@@ -31,14 +33,20 @@ export default function RootLayout({
     Module: ['Quarantine', 'BoM', 'Warehouse']
   };
 
+  const { userId } = await auth();
+
   return (
-    <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TopToolBar />
-        <LeftSideMenu menuItems={sampleMenuItem} />
-        {children}
-      </body>
-    </html>
+    <ClerkProvider dynamic>
+      <html lang='en'>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <div>
+            <TopToolBar />
+            <LeftSideMenu menuItems={sampleMenuItem} />
+          </div>
+          <div className='pl-[160px] pt-12'>{children}</div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

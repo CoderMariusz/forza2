@@ -15,15 +15,15 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({ menuItems }) => {
   };
 
   return (
-    <div className='fixed left-0 top-12 h-full w-40 bg-gray-700 text-white'>
-      <ul>
+    <div className='fixed text-m font-bold left-0 top-12 h-full w-40 bg-gray-100 text-gray-800'>
+      <ul className='pt-6'>
         {Object.entries(menuItems).map(([key, subItems]) => (
           <li
             key={key}
-            className='p-2'>
+            className='p-1'>
             <div
               onClick={() => toggleExpand(key)}
-              className='pl-2 cursor-pointer transition duration-200 ease-in-out transform hover:bg-slate-600'>
+              className='p-1 pl-2 cursor-pointer transition duration-200 ease-in-out transform hover:bg-slate-400'>
               {key}
             </div>
             {subItems && expanded[key] && (
@@ -31,7 +31,7 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({ menuItems }) => {
                 {subItems.map((subItem) => (
                   <li
                     key={subItem}
-                    className='p-1 transition duration-200 ease-in-out transform hover:bg-slate-600'>
+                    className='p-2 transition duration-200 ease-in-out transform hover:bg-slate-600'>
                     {subItem}
                   </li>
                 ))}

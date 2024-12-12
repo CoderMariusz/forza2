@@ -12,7 +12,7 @@ const TopToolBar: React.FC = () => {
           width={24}
           height={24}
         />
-        <span className='ml-2 text-white font-bold'>Forza</span>
+        <span className='ml-2 text-gray-800 font-bold'>FORZA</span>
       </div>
 
       {/* Middle: Searcher (to be implemented later) */}
