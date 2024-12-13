@@ -1,3 +1,6 @@
+import { Button } from '@/components/ui/button';
+import { SignIn } from '@clerk/nextjs';
+
 interface User {
   userHandle: string;
 }
@@ -13,6 +16,8 @@ export default function Home(user: User) {
             This is a dashboard for Forza. It is a project created by Mariusz
             Krawczyk. hi, {user.userHandle}
           </p>
+          <Button>Get Started</Button>
+          <SignIn />
         </div>
       </div>
     </div>
