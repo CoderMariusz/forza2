@@ -16,27 +16,32 @@ export function AppSidebar() {
   const items = [
     {
       title: 'Home',
-      url: '#',
+      url: '/',
       icon: Home
     },
     {
-      title: 'Inbox',
-      url: '#',
+      title: 'Stock',
+      url: '/stock',
       icon: Inbox
     },
     {
-      title: 'Calendar',
-      url: '#',
+      title: 'Delivery',
+      url: '/delivery',
+      icon: Settings
+    },
+    {
+      title: 'BoM',
+      url: '/bom',
       icon: Calendar
     },
     {
-      title: 'Search',
-      url: '#',
+      title: 'Quarantine',
+      url: '/quarantine',
       icon: Search
     },
     {
       title: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: Settings
     }
   ];

@@ -17,7 +17,6 @@ export default function Home(user: User) {
             Krawczyk. hi, {user.userHandle}
           </p>
           <Button>Get Started</Button>
-          <SignIn />
         </div>
       </div>
     </div>

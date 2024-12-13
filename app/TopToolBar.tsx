@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useUser } from '@clerk/nextjs';
 import Form from 'next/form';
+import { SearchIcon } from '@sanity/icons';
 
 const TopToolBar: React.FC = () => {
   const { user } = useUser();
@@ -24,18 +25,22 @@ const TopToolBar: React.FC = () => {
         </div>
 
         {/* Middle: Searcher (to be implemented later) */}
-        <div className='flex-grow mx-4'>
+        <div className=' mx-4'>
           <Form
             action={'/search'}
-            className='w-full sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0'>
+            className='w-full flex sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0'>
             <input
               type='text'
               name='query'
+              className='w-full sm:w-auto bg-gray-200 text-gray-800 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+              placeholder='Search...'
             />
+            <SearchIcon className='w-10 h-10 text-gray-200' />
           </Form>
         </div>
 
         {/* Right side: User info */}
+        {}
         <div className='flex items-center'>
           <div className='w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white'>
             <span>AB</span>

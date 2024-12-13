@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
 import TopToolBar from '../TopToolBar';
-import { auth } from '@clerk/nextjs/server';
 import { ClerkProvider } from '@clerk/nextjs';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
@@ -27,8 +26,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = await auth();
-
   return (
     <ClerkProvider dynamic>
       <html lang='en'>
