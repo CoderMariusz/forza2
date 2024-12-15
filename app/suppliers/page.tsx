@@ -43,43 +43,51 @@ const SuppliersPage = () => {
 
   return (
     <div className='container mx-auto p-2'>
-      <h1 className='text-2xl font-bold mb-2'>Suppliers</h1>
+      <h1 className='text-m font-bold mb-2'>Suppliers</h1>
       <table className='table-auto w-full border-collapse border border-gray-300'>
         <thead>
           <tr className='bg-gray-200'>
-            <th className='border border-gray-300 px-2 py-1'>Supplier Code</th>
-            <th className='border border-gray-300 px-2 py-1'>Name</th>
-            <th className='border border-gray-300 px-2 py-1'>Email</th>
-            <th className='border border-gray-300 px-2 py-1'>Phone</th>
-            <th className='border border-gray-300 px-2 py-1'>Country</th>
-            <th className='border border-gray-300 px-2 py-1'>Tax Code</th>
-            <th className='border border-gray-300 px-2 py-1'>Actions</th>
+            <th className='border text-sm border-gray-300 px-2 py-1'>
+              Supplier Code
+            </th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>Name</th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>Email</th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>Phone</th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>
+              Country
+            </th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>
+              Tax Code
+            </th>
+            <th className='border border-gray-300 text-sm px-2 py-1'>
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {suppliers.map((supplier) => (
             <tr key={supplier._id}>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm  px-2 py-1'>
                 {supplier.supplierCode}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 {supplier.name}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 {supplier.contactDetail?.email}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 {supplier.contactDetail?.phone}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 {supplier.country}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 {supplier.taxCode}
               </td>
-              <td className='border border-gray-300 px-2 py-1'>
+              <td className='border border-gray-300 text-sm px-2 py-1'>
                 <button
-                  className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mr-2'
+                  className='bg-green-800 text-white text-sm px-2 py-1 rounded hover:bg-green-600 mr-2'
                   onClick={() => openEditModal(supplier)}>
                   Edit
                 </button>
@@ -90,7 +98,7 @@ const SuppliersPage = () => {
       </table>
       <div className='mt-4'>
         <button
-          className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
+          className='bg-blue-500 text-white px-3 py-1 text-sm rounded hover:bg-blue-600'
           onClick={openAddModal}>
           Add Supplier
         </button>

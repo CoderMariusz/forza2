@@ -20,8 +20,13 @@ export function AppSidebar() {
       icon: Home
     },
     {
-      title: 'Stock',
-      url: '/stock',
+      title: 'Items',
+      url: '/items',
+      icon: Inbox
+    },
+    {
+      title: 'Suppliers',
+      url: '/suppliers',
       icon: Inbox
     },
     {

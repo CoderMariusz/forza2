@@ -8,8 +8,6 @@ import { SearchIcon } from '@sanity/icons';
 const TopToolBar: React.FC = () => {
   const { user } = useUser();
 
-  console.log(user);
-
   return (
     <div className='flex w-full fixed top-0 right-0'>
       <div className='h-12 bg-blue-500 flex items-center justify-between px-4 flex-shrink-0 w-full'>

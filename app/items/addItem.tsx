@@ -27,6 +27,8 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
     { _id: string; name: string }[]
   >([]);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibility, setVisibility] = useState(false);
 
   // Fetch suppliers and expiration methods from Sanity
   useEffect(() => {
@@ -60,6 +62,7 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
           ...prev,
           [name]: {
             _ref: selected._id,
+            _id: selected._id,
             _type: 'reference',
             name: selected.name
           }
@@ -140,27 +143,51 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
             className='border border-gray-300 rounded px-3 py-2 w-full'
           />
         </div>
+
         <div className='mb-4'>
           <label className='block mb-1'>Expiration Method</label>
-          <select
-            name='expirationMethod'
-            value={formData.expirationMethod?._ref || ''}
-            onChange={handleChange}
-            className='border border-gray-300 rounded px-3 py-2 w-full'>
-            <option
-              value=''
-              disabled>
-              Select Expiration Method
-            </option>
-            {expirationMethods.map((method) => (
-              <option
-                key={method._id}
-                value={method._id}>
-                {method.name}
-              </option>
-            ))}
-          </select>
+          <div className='relative'>
+            <input
+              type='text'
+              placeholder='Search Expiration Method'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setVisibility(true)}
+              className='border border-gray-300 rounded px-3 py-2 w-full'
+            />
+            {visibility && (
+              <div className='absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-40 overflow-y-auto'>
+                {expirationMethods
+                  .filter((method) =>
+                    method.name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+                  .map((method) => (
+                    <div
+                      key={method._id}
+                      className='px-3 py-2 hover:bg-gray-200 cursor-pointer'
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          expirationMethod: {
+                            _ref: method._id,
+                            _id: method._id,
+                            _type: 'reference',
+                            name: method.name
+                          }
+                        }));
+                        setSearchQuery(method.name);
+                        setVisibility(false); // Clear search query after selection
+                      }}>
+                      {method.name}
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
         </div>
+
         <div className='mb-4'>
           <label className='block mb-1'>Supplier</label>
           <select

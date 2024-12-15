@@ -17,6 +17,7 @@ const ItemPage = () => {
       const results = await getItems();
       setItems(results);
       setFilteredItems(results);
+      console.log(results);
     };
 
     fetchItems();
@@ -57,37 +58,37 @@ const ItemPage = () => {
       <table className='table-auto w-full border-collapse border border-gray-300'>
         <thead>
           <tr className='bg-gray-200'>
-            <th className='border border-gray-300 px-4 py-2'>Item Number</th>
-            <th className='border border-gray-300 px-4 py-2'>Name</th>
-            <th className='border border-gray-300 px-4 py-2'>Price</th>
-            <th className='border border-gray-300 px-4 py-2'>Measure Unit</th>
-            <th className='border border-gray-300 px-4 py-2'>
+            <th className='border border-gray-300 px-2 py-1'>Item Number</th>
+            <th className='border border-gray-300 px-2 py-1'>Name</th>
+            <th className='border border-gray-300 px-2 py-1'>Price</th>
+            <th className='border border-gray-300 px-2 py-1'>Measure Unit</th>
+            <th className='border border-gray-300 px-2 py-1'>
               Expiration Method
             </th>
-            <th className='border border-gray-300 px-4 py-2'>Supplier</th>
-            <th className='border border-gray-300 px-4 py-2'>Actions</th>
+            <th className='border border-gray-300 px-2 py-1'>Supplier</th>
+            <th className='border border-gray-300 px-2 py-1'>Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredItems.map((item) => (
             <tr key={item._id}>
-              <td className='border border-gray-300 px-4 py-2'>
+              <td className='border border-gray-300 px-2 py-1'>
                 {item.itemNumber}
               </td>
-              <td className='border border-gray-300 px-4 py-2'>{item.name}</td>
-              <td className='border border-gray-300 px-4 py-2'>{item.price}</td>
-              <td className='border border-gray-300 px-4 py-2'>
+              <td className='border border-gray-300 px-2 py-1'>{item.name}</td>
+              <td className='border border-gray-300 px-2 py-1'>{item.price}</td>
+              <td className='border border-gray-300 px-2 py-1'>
                 {item.measureUnit}
               </td>
-              <td className='border border-gray-300 px-4 py-2'>
+              <td className='border border-gray-300 px-2 py-1'>
                 {item.expirationMethod?.name}
               </td>
-              <td className='border border-gray-300 px-4 py-2'>
+              <td className='border border-gray-300 px-2 py-1'>
                 {item.supplier?.name}
               </td>
-              <td className='border border-gray-300 px-4 py-2'>
+              <td className='border border-gray-300 px-2 py-1'>
                 {/* Edit Action Placeholder */}
-                <button className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600'>
+                <button className='bg-green-800 text-white px-2 py-1 rounded hover:bg-green-600'>
                   Edit
                 </button>
               </td>
