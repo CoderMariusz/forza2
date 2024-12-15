@@ -1,70 +1,59 @@
 'use client';
-import React, { useState } from 'react';
-import MaterialModal from './addItem';
 
-interface Material {
-  itemNumber: string;
-  name: string;
-  price: number;
-  measureUnit: string;
-  expirationMethod: string;
-  supplier: string;
-}
+import React, { useState, useEffect } from 'react';
+import { getItems } from '@/sanity/lib/client'; // Replace with your actual Sanity client
+import MaterialModal from './addItem'; // Placeholder for future modal component
+import { Item } from '@/types/item';
 
-const MaterialsPage = () => {
-  const [materials, setMaterials] = useState<Material[]>([
-    {
-      itemNumber: 'MAT001',
-      name: 'Material A',
-      price: 10.0,
-      measureUnit: 'kg',
-      expirationMethod: 'Provided',
-      supplier: 'Supplier A'
-    },
-    {
-      itemNumber: 'MAT002',
-      name: 'Material B',
-      price: 15.5,
-      measureUnit: 'liters',
-      expirationMethod: 'From Delivery Date',
-      supplier: 'Supplier B'
-    }
-  ]);
-
+const ItemPage = () => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
-  const [currentMaterial, setCurrentMaterial] = useState<Material | null>(null);
 
-  const handleAddMaterial = (material: Material) => {
-    if (materials.some((m) => m.itemNumber === material.itemNumber)) {
-      alert('Item number already exists. Please choose another.');
-      return;
-    }
-    setMaterials((prev) => [...prev, material]);
-    setModalOpen(false);
-  };
+  // Fetch items from Sanity
+  useEffect(() => {
+    const fetchItems = async () => {
+      const results = await getItems();
+      setItems(results);
+      setFilteredItems(results);
+    };
 
-  const handleEditMaterial = (updatedMaterial: Material) => {
-    setMaterials((prev) =>
-      prev.map((m) =>
-        m.itemNumber === updatedMaterial.itemNumber ? updatedMaterial : m
-      )
+    fetchItems();
+  }, []);
+
+  // Search filtering
+  useEffect(() => {
+    const filtered = items.filter((item: Item) =>
+      [item.name, item.itemNumber, item._id, item.supplier?.name]
+        .filter(Boolean)
+        .some((field) =>
+          field?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
     );
-    setModalOpen(false);
-  };
+    setFilteredItems(filtered);
+  }, [searchQuery, items]);
 
   const openAddModal = () => {
-    setCurrentMaterial(null);
-    setModalOpen(true);
-  };
-
-  const openEditModal = (material: Material) => {
-    setCurrentMaterial(material);
     setModalOpen(true);
   };
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Materials</h1>
+      <h1 className='text-2xl font-bold mb-4'>Items</h1>
+
+      {/* Search Bar */}
+      <div className='mb-4'>
+        <input
+          type='text'
+          placeholder='Search by Name, Item Number, or Supplier'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className='border border-gray-300 rounded px-3 py-2 w-full'
+        />
+      </div>
+
+      {/* Items Table */}
       <table className='table-auto w-full border-collapse border border-gray-300'>
         <thead>
           <tr className='bg-gray-200'>
@@ -80,30 +69,25 @@ const MaterialsPage = () => {
           </tr>
         </thead>
         <tbody>
-          {materials.map((material) => (
-            <tr key={material.itemNumber}>
+          {filteredItems.map((item) => (
+            <tr key={item._id}>
               <td className='border border-gray-300 px-4 py-2'>
-                {material.itemNumber}
+                {item.itemNumber}
+              </td>
+              <td className='border border-gray-300 px-4 py-2'>{item.name}</td>
+              <td className='border border-gray-300 px-4 py-2'>{item.price}</td>
+              <td className='border border-gray-300 px-4 py-2'>
+                {item.measureUnit}
               </td>
               <td className='border border-gray-300 px-4 py-2'>
-                {material.name}
+                {item.expirationMethod?.name}
               </td>
               <td className='border border-gray-300 px-4 py-2'>
-                {material.price}
+                {item.supplier?.name}
               </td>
               <td className='border border-gray-300 px-4 py-2'>
-                {material.measureUnit}
-              </td>
-              <td className='border border-gray-300 px-4 py-2'>
-                {material.expirationMethod}
-              </td>
-              <td className='border border-gray-300 px-4 py-2'>
-                {material.supplier}
-              </td>
-              <td className='border border-gray-300 px-4 py-2'>
-                <button
-                  className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mr-2'
-                  onClick={() => openEditModal(material)}>
+                {/* Edit Action Placeholder */}
+                <button className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600'>
                   Edit
                 </button>
               </td>
@@ -111,23 +95,26 @@ const MaterialsPage = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Add Item Button */}
       <div className='mt-4'>
         <button
           className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
           onClick={openAddModal}>
-          Add Material
+          Add Item
         </button>
       </div>
+
+      {/* Modal Placeholder */}
       {isModalOpen && (
         <MaterialModal
-          existingMaterials={materials}
           onClose={() => setModalOpen(false)}
-          onSave={currentMaterial ? handleEditMaterial : handleAddMaterial}
-          initialData={currentMaterial}
+          onSave={(item: Item) => setItems((prev) => [...prev, item])}
+          initialData={null}
         />
       )}
     </div>
   );
 };
 
-export default MaterialsPage;
+export default ItemPage;

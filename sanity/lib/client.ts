@@ -22,6 +22,11 @@ export const getSuppliers = async (): Promise<Supplier[]> => {
   return data;
 };
 
+export const getExpirationMethods = async (): Promise<Supplier[]> => {
+  const data = await client.fetch(`*[_type == "expirationMethod"]`);
+  return data;
+};
+
 export const saveSupplier = async (supplier: Supplier): Promise<Supplier> => {
   if (supplier._id) {
     // Update existing supplier
