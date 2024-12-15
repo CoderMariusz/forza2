@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { SignIn } from '@clerk/nextjs';
 
 interface User {
   userHandle: string;

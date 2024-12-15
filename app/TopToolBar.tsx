@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { useUser } from '@clerk/nextjs';
+import { ClerkLoaded, SignInButton, useUser } from '@clerk/nextjs';
 import Form from 'next/form';
 import { SearchIcon } from '@sanity/icons';
 
@@ -40,17 +40,22 @@ const TopToolBar: React.FC = () => {
         </div>
 
         {/* Right side: User info */}
-        {}
-        <div className='flex items-center'>
-          <div className='w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white'>
-            <span>AB</span>
-          </div>
-          <a
-            href='/settings'
-            className='ml-4 text-white transition duration-200 ease-in-out transform hover:scale-105'>
-            Settings
-          </a>
-        </div>
+        <ClerkLoaded>
+          {user ? (
+            <div className='flex items-center'>
+              <div className='w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white'>
+                <span>AB</span>
+              </div>
+              <a
+                href='/settings'
+                className='ml-4 text-white transition duration-200 ease-in-out transform hover:scale-105'>
+                Settings
+              </a>
+            </div>
+          ) : (
+            <SignInButton />
+          )}
+        </ClerkLoaded>
       </div>
     </div>
   );
