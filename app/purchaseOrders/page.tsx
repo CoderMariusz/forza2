@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { getPOs } from '@/sanity/lib/client'; // Replace with actual Sanity client function
 import { PO } from '@/types/PurchaseOrder'; // Define the PO interface
+import AddPurchaseOrder from './AddPurchaseOrder'; // Placeholder for future modal component
 
 const PurchaseOrderPage = () => {
   const [pos, setPOs] = useState<PO[]>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [filteredPOs, setFilteredPOs] = useState<PO[]>([]);
   const [filters, setFilters] = useState({
     poNumber: '',
@@ -160,7 +162,13 @@ const PurchaseOrderPage = () => {
             ))}
           </tbody>
         </table>
+        <button
+          className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
+          onClick={() => setModalOpen(true)}>
+          Add Purchase Order
+        </button>
       </div>
+      {isModalOpen && <AddPurchaseOrder onClose={() => setModalOpen(false)} />}
     </div>
   );
 };

@@ -26,13 +26,14 @@ const ItemPage = () => {
   // Search filtering
   useEffect(() => {
     const filtered = items.filter((item: Item) =>
-      [item.name, item.itemNumber, item._id, item.supplier?.name]
+      [item.name, item.itemNumber, item._id, item.supplier?.name || '']
         .filter(Boolean)
         .some((field) =>
           field?.toString().toLowerCase().includes(searchQuery.toLowerCase())
         )
     );
     setFilteredItems(filtered);
+    console.log(filtered);
   }, [searchQuery, items]);
 
   const openAddModal = () => {
@@ -71,7 +72,7 @@ const ItemPage = () => {
         </thead>
         <tbody>
           {filteredItems.map((item) => (
-            <tr key={item._id}>
+            <tr key={item.itemNumber}>
               <td className='border border-gray-300 px-2 py-1'>
                 {item.itemNumber}
               </td>
@@ -112,6 +113,7 @@ const ItemPage = () => {
           onClose={() => setModalOpen(false)}
           onSave={(item: Item) => setItems((prev) => [...prev, item])}
           initialData={null}
+          existingItems={items}
         />
       )}
     </div>

@@ -6,13 +6,13 @@ export interface Item {
   price: number;
   measureUnit: string;
   expirationMethod: {
-    _ref: string;
-    _id: string;
+    _ref?: string;
+    type: string;
     name: string;
   };
   supplier: {
-    _ref: string;
-    _id: string;
+    _ref?: string;
+    type: string;
     name: string;
   };
 }

@@ -30,6 +30,11 @@ export function AppSidebar() {
       icon: Inbox
     },
     {
+      title: 'Purchase Orders',
+      url: '/purchaseOrders',
+      icon: Settings
+    },
+    {
       title: 'Delivery',
       url: '/delivery',
       icon: Settings

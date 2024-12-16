@@ -1,44 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { getSuppliers, getExpirationMethods } from '@/sanity/lib/client'; // Replace with actual Sanity client methods
-import { Item } from '@/types/item'; // Adjust the path to your Item type definition
+import {
+  getSuppliers,
+  getExpirationMethods,
+  saveItem
+} from '@/sanity/lib/client'; // Replace with actual Sanity client methods
+import { Item } from '@/types/item';
+import { Supplier } from '@/types/supplier';
+import { expirationMethod } from '@/types/expirationMethods';
 
 interface ItemModalProps {
   onClose: () => void;
   onSave: (item: Item) => void;
   initialData: Item | null;
+  existingItems: Item[]; // Pass existing items for unique validation
 }
 
-const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
+const ItemModal = ({
+  onClose,
+  onSave,
+  initialData,
+  existingItems
+}: ItemModalProps) => {
   const [formData, setFormData] = useState<Item>(
     initialData || {
-      _id: '',
       itemNumber: '',
       name: '',
       price: 0,
       measureUnit: '',
-      expirationMethod: { _ref: '', _id: '', name: '' },
-      supplier: { _ref: '', _id: '', name: '' }
+      expirationMethod: { _ref: '', type: 'reference', name: '' },
+      supplier: { _ref: '', type: 'reference', name: '' }
     }
   );
-  const [suppliers, setSuppliers] = useState<{ _id: string; name: string }[]>(
+  const [suppliers, setSuppliers] = useState<{ _id?: string; name: string }[]>(
     []
   );
   const [expirationMethods, setExpirationMethods] = useState<
-    { _id: string; name: string }[]
+    { _id?: string; name: string }[]
   >([]);
   const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [visibility, setVisibility] = useState(false);
 
   // Fetch suppliers and expiration methods from Sanity
   useEffect(() => {
     const fetchOptions = async () => {
-      const suppliersData = (await getSuppliers()).filter(
-        (supplier) => supplier._id
-      ) as { _id: string; name: string }[]; // Fetch suppliers from Sanity and filter out those without _id
-      const expirationMethodsData = (await getExpirationMethods()).filter(
-        (method) => method._id
-      ) as { _id: string; name: string }[]; // Fetch expiration methods and filter out those without _id
+      const suppliersData: Supplier[] = await getSuppliers();
+      const expirationMethodsData: expirationMethod[] =
+        await getExpirationMethods();
       setSuppliers(suppliersData);
       setExpirationMethods(expirationMethodsData);
     };
@@ -51,7 +57,6 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
   ) => {
     const { name, value } = e.target;
 
-    // Handle references for supplier and expiration method
     if (name === 'supplier' || name === 'expirationMethod') {
       const selectedOption =
         name === 'supplier' ? suppliers : expirationMethods;
@@ -62,9 +67,7 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
           ...prev,
           [name]: {
             _ref: selected._id,
-            _id: selected._id,
-            _type: 'reference',
-            name: selected.name
+            _type: 'reference'
           }
         }));
       }
@@ -80,19 +83,59 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
     const { itemNumber, name, price, measureUnit, expirationMethod, supplier } =
       formData;
 
+    // Validation
     if (
       !itemNumber ||
       !name ||
       !price ||
       !measureUnit ||
-      !expirationMethod?._ref ||
-      !supplier?._ref
+      !expirationMethod._ref ||
+      !supplier._ref
     ) {
       setError('All fields are required.');
       return;
     }
 
-    onSave(formData);
+    console.log('Saving item:', formData);
+
+    if (!initialData) {
+      // Ensure item number is unique when adding a new item
+      console.log('Checking for existing items:', existingItems);
+
+      const itemExists = existingItems.some(
+        (item) => item.itemNumber === itemNumber
+      );
+      if (itemExists) {
+        setError('Item number already exists. Please choose another.');
+        return;
+      }
+    }
+
+    const sanitizedFormData = {
+      ...formData,
+      expirationMethod: {
+        _ref: expirationMethod._ref,
+        _type: 'reference',
+        type: expirationMethod.type,
+        name: expirationMethod.name
+      },
+      supplier: {
+        _ref: supplier._ref,
+        _type: 'reference',
+        type: supplier.type,
+        name: supplier.name
+      }
+    };
+
+    console.log('Sanitized form data:', sanitizedFormData);
+
+    try {
+      saveItem(sanitizedFormData);
+      onSave(sanitizedFormData);
+    } catch (error) {
+      console.error('Error saving item:', error);
+      setError('Failed to save the item.');
+    }
   };
 
   return (
@@ -102,6 +145,8 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
           {initialData ? 'Edit Item' : 'Add New Item'}
         </h2>
         {error && <p className='text-red-500 mb-4'>{error}</p>}
+
+        {/* Item Number */}
         <div className='mb-4'>
           <label className='block mb-1'>Item Number</label>
           <input
@@ -110,9 +155,11 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
             value={formData.itemNumber}
             onChange={handleChange}
             className='border border-gray-300 rounded px-3 py-2 w-full'
-            disabled={!!initialData}
+            disabled={!!initialData} // Disable editing item number when editing
           />
         </div>
+
+        {/* Name */}
         <div className='mb-4'>
           <label className='block mb-1'>Name</label>
           <input
@@ -123,6 +170,8 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
             className='border border-gray-300 rounded px-3 py-2 w-full'
           />
         </div>
+
+        {/* Price */}
         <div className='mb-4'>
           <label className='block mb-1'>Price</label>
           <input
@@ -133,6 +182,8 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
             className='border border-gray-300 rounded px-3 py-2 w-full'
           />
         </div>
+
+        {/* Measure Unit */}
         <div className='mb-4'>
           <label className='block mb-1'>Measure Unit</label>
           <input
@@ -144,50 +195,30 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
           />
         </div>
 
+        {/* Expiration Method */}
         <div className='mb-4'>
           <label className='block mb-1'>Expiration Method</label>
-          <div className='relative'>
-            <input
-              type='text'
-              placeholder='Search Expiration Method'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setVisibility(true)}
-              className='border border-gray-300 rounded px-3 py-2 w-full'
-            />
-            {visibility && (
-              <div className='absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-40 overflow-y-auto'>
-                {expirationMethods
-                  .filter((method) =>
-                    method.name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
-                  )
-                  .map((method) => (
-                    <div
-                      key={method._id}
-                      className='px-3 py-2 hover:bg-gray-200 cursor-pointer'
-                      onClick={() => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          expirationMethod: {
-                            _ref: method._id,
-                            _id: method._id,
-                            _type: 'reference',
-                            name: method.name
-                          }
-                        }));
-                        setSearchQuery(method.name);
-                        setVisibility(false); // Clear search query after selection
-                      }}>
-                      {method.name}
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
+          <select
+            name='expirationMethod'
+            value={formData.expirationMethod?._ref || ''}
+            onChange={handleChange}
+            className='border border-gray-300 rounded px-3 py-2 w-full'>
+            <option
+              value=''
+              disabled>
+              Select Expiration Method
+            </option>
+            {expirationMethods.map((method) => (
+              <option
+                key={method._id}
+                value={method._id}>
+                {method.name}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Supplier */}
         <div className='mb-4'>
           <label className='block mb-1'>Supplier</label>
           <select
@@ -209,7 +240,9 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
             ))}
           </select>
         </div>
-        <div className='flex justify-end'>
+
+        {/* Buttons */}
+        <div className='flex justify-end mt-4'>
           <button
             className='bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2'
             onClick={onClose}>
@@ -218,7 +251,7 @@ const ItemModal = ({ onClose, onSave, initialData }: ItemModalProps) => {
           <button
             className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
             onClick={handleSubmit}>
-            Save
+            {initialData ? 'Save' : 'Add'}
           </button>
         </div>
       </div>
