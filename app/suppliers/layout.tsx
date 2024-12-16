@@ -27,7 +27,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider dynamic>
+    <ClerkProvider
+      dynamic
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      allowedRedirectOrigins={[
+        'https://www.forza2demo.co.uk',
+        'https://forza2demo.co.uk'
+      ]}>
       <html lang='en'>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
