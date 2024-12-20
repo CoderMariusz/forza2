@@ -1,12 +1,20 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { ClerkLoaded, SignInButton, useUser } from '@clerk/nextjs';
+import {
+  ClerkLoaded,
+  SignInButton,
+  SignOutButton,
+  UserButton,
+  useUser
+} from '@clerk/nextjs';
 import Form from 'next/form';
 import { SearchIcon } from '@sanity/icons';
 
 const TopToolBar: React.FC = () => {
   const { user } = useUser();
+
+  console.log(user);
 
   return (
     <div className='flex w-full fixed top-0 right-0'>
@@ -41,17 +49,13 @@ const TopToolBar: React.FC = () => {
         <ClerkLoaded>
           {user ? (
             <div className='flex items-center'>
-              <div className='w-8 h-8 bg-green-700 rounded-full flex items-center justify-center text-white'>
-                <span>AB</span>
+              <UserButton />
+              <div className='bg-blue-700 rounded-lg ml-2 p-2 text-gray-300  shadow-lg'>
+                <SignOutButton />
               </div>
-              <a
-                href='/settings'
-                className='ml-4 text-white transition duration-200 ease-in-out transform hover:scale-105'>
-                Settings
-              </a>
             </div>
           ) : (
-            <SignInButton />
+            <SignInButton mode='modal' />
           )}
         </ClerkLoaded>
       </div>

@@ -1,53 +1,87 @@
-import { defineField, defineType } from 'sanity';
+import { defineType, defineField } from 'sanity';
 
-export const purchaseOrderType = defineType({
-  name: 'purchaseOrder',
+export const purchaseOrder = defineType({
+  name: 'po',
   title: 'Purchase Order',
   type: 'document',
   fields: [
     defineField({
-      name: 'poNumber',
+      name: 'PoNumber',
       title: 'PO Number',
       type: 'string',
-      description: 'Unique identifier for the purchase order.',
-      validation: (Rule) =>
-        Rule.required()
-          .min(3)
-          .max(15)
-          .error('PO Number must be between 3 and 15 characters.')
+      validation: (Rule) => Rule.required().error('PO Number is required.')
     }),
     defineField({
       name: 'supplier',
       title: 'Supplier',
       type: 'reference',
       to: [{ type: 'supplier' }],
-      description: 'The supplier associated with this purchase order.',
       validation: (Rule) => Rule.required().error('Supplier is required.')
     }),
     defineField({
       name: 'deliveryDate',
       title: 'Delivery Date',
       type: 'date',
-      options: {
-        dateFormat: 'YYYY-MM-DD'
-      },
-      description: 'The expected delivery date of the order.',
-      validation: (Rule) => Rule.required().error('Delivery Date is required.')
+      validation: (Rule) => Rule.required().error('Delivery date is required.')
     }),
     defineField({
-      name: 'createdBy',
-      title: 'Created By',
-      type: 'string',
-      description: 'The user who created this purchase order.',
+      name: 'items',
+      title: 'Items',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'item',
+              title: 'Item',
+              type: 'reference',
+              to: [{ type: 'item' }]
+            },
+            {
+              name: 'quantity',
+              title: 'Quantity',
+              type: 'number',
+              validation: (Rule) =>
+                Rule.required().min(1).error('Quantity must be at least 1.')
+            },
+            {
+              name: 'status',
+              title: 'Status',
+              type: 'string',
+              validation: (Rule) =>
+                Rule.required().min(1).error('Status is required.')
+            },
+            {
+              name: 'deliveryDateItem',
+              title: 'Delivery date Item',
+              type: 'date',
+              validation: (Rule) =>
+                Rule.required().min(1).error('Status is required.')
+            }
+          ]
+        }
+      ],
       validation: (Rule) =>
-        Rule.required().error('Created By field is required.')
+        Rule.required().min(1).error('At least one item must be added.')
     }),
     defineField({
-      name: 'creationDate',
-      title: 'Creation Date',
+      name: 'addBy',
+      title: 'Added By',
+      type: 'string',
+      validation: (Rule) => Rule.required().error('User who added is required.')
+    }),
+    defineField({
+      name: 'createdAt',
+      title: 'Created At',
       type: 'datetime',
-      description: 'The timestamp when the purchase order was created.',
-      validation: (Rule) => Rule.required().error('Creation Date is required.')
+      validation: (Rule) => Rule.required()
+    }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      validation: (Rule) => Rule.required()
     })
   ]
 });

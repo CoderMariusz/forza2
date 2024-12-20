@@ -1,7 +1,23 @@
 export interface PO {
-  poNumber: string;
-  supplier: string;
-  deliveryDate: string; // Use ISO string format for dates
-  createdBy: string;
-  creationDate: string; // Use ISO string format for timestamps
+  _id?: string;
+  PoNumber: string;
+  supplier: { _ref: string; _type: string; name?: string };
+  deliveryDate: string;
+  items: {
+    item: { _ref: string; _type: string; name?: string };
+    quantity: number;
+    status?: string;
+    deliveryDateItem?: string;
+  }[];
+  addBy: string;
+  createdAt: string;
+  status:
+    | 'Open order'
+    | 'Draft'
+    | 'Submitted'
+    | 'Approved'
+    | 'Rejected'
+    | 'Completed'
+    | 'Cancelled'
+    | 'Invoiced';
 }
